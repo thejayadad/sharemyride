@@ -7,12 +7,11 @@ const CarSchema = new mongoose.Schema({
     },
     title: String,
     address: String,
-    photos: [String],
- 
+    photos: [String], 
     desc: String,
     extraInfo: String,
-    availableStart: Number,
-    availableSFinish: Number,
+    pickUp: {type:Date, required:true},
+    dropOff: {type:Date, required:true},
     carSeats: Number,
     price: Number,
     type: {

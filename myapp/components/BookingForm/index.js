@@ -55,7 +55,6 @@ const BookingForm = ({ carId }) => {
       <form onSubmit={handleSubmit}
       className='flex flex-col'
       >
-        {/* Your form fields go here */}
         <label htmlFor='checkIn'>Check In:</label>
         <input type='date' id='checkIn' value={checkIn} onChange={(e) => setCheckIn(e.target.value)} />
 
