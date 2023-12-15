@@ -9,6 +9,10 @@ const ProfilePage = ({ userId }) => {
   const [activeTab, setActiveTab] = useState('myBookings');
   const { data: session } = useSession();
 
+  if(!session){
+    return <h2>Not Authorized</h2>
+  }
+
   return (
     <section className='px-4 py-12'>
       <div className='flex flex-col max-w-screen-xl mx-auto'>
