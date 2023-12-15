@@ -97,6 +97,12 @@ const CarForm = () => {
     }
   };
 
+  const handleDeletePhoto = (index) => {
+    const newPhotos = [...photos];
+    newPhotos.splice(index, 1);
+    setPhotos(newPhotos);
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit}
@@ -145,6 +151,8 @@ const CarForm = () => {
           <option value='truck'>Truck</option>
           <option value='van'>Van</option>
         </select>
+ 
+
         <label htmlFor='image'>
           Upload Image <AiOutlineFileImage />
         </label>
@@ -152,8 +160,29 @@ const CarForm = () => {
           id='image'
           type='file'
           style={{ display: 'none' }}
-          onChange={(e) => setPhotos(e.target.files[0])}
+          onChange={(e) => setPhotos([...photos, ...e.target.files])}
         />
+
+        {photos.length > 0 && (
+          <div className='flex gap-2 mt-2'>
+            {photos.map((photo, index) => (
+              <div key={index} className='relative'>
+                <button
+                  className='absolute top-2 right-2 bg-red-500 p-1 rounded-full text-white cursor-pointer'
+                  onClick={() => handleDeletePhoto(index)}
+                >
+                  X
+                </button>
+                <img
+                  src={URL.createObjectURL(photo)}
+                  alt={`Preview ${index}`}
+                  className='w-20 h-20 object-cover'
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
         <label htmlFor='checkIn'>Check In:</label>
         <input type='date' id='checkIn' value={checkIn} onChange={(e) => setCheckIn(e.target.value)} />
 
