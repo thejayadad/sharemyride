@@ -11,8 +11,8 @@ const CarSchema = new mongoose.Schema({
  
     desc: String,
     extraInfo: String,
-    pickUp: Number,
-    dropOff: Number,
+    availableStart: Number,
+    availableSFinish: Number,
     carSeats: Number,
     price: Number,
     type: {

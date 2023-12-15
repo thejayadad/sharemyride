@@ -4,6 +4,7 @@ import BookingList from '@/components/BookingList';
 import BookingForm from '@/components/BookingForm';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import CarList from '@/components/CarList';
+import CarForm from '@/components/CarForm';
 
 const ProfilePage = ({ userId }) => {
   const [activeTab, setActiveTab] = useState('myBookings');
@@ -38,18 +39,27 @@ const ProfilePage = ({ userId }) => {
           <button
             onClick={() => setActiveTab('newRide')}
             className={`py-2 px-4 focus:outline-none rounded-tl-3xl rounded-tr-3xl w-full ${
-              activeTab === 'newRide' ? 'bg-liteGray text-white' : 'bg-gray-200 text-gray-800'
+              activeTab === 'newRide' ? 'bg-white text-liteGray' : 'bg-gray-200 text-gray-800'
             }`}
           >
             New Ride
+          </button>
+          <button
+            onClick={() => setActiveTab('newBooking')}
+            className={`py-2 px-4 focus:outline-none rounded-tl-3xl rounded-tr-3xl w-full ${
+              activeTab === 'newRide' ? 'bg-liteGray text-white' : 'bg-gray-200 text-gray-800'
+            }`}
+          >
+            New Booking
           </button>
     
         </div>
 
         <div className='bg-white border  border-t-transparent border-gray-300 p-4 rounded-bl-lg rounded-br-lg'>
         {activeTab === 'allRide' && <CarList />}
+        {activeTab === 'newRide' && <CarForm />}
           {activeTab === 'myBookings' && <BookingList userId={session?.user?.id} />}
-          {activeTab === 'newRide' && <BookingForm />}
+          {activeTab === 'newBooking' && <BookingForm />}
         </div>
       </div>
     </section>

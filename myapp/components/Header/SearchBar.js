@@ -4,7 +4,7 @@ import { FiSearch } from 'react-icons/fi';
 
 const SearchBar = () => {
   return (
-    <div className="flex items-center justify-between bg-secondary p-6 shadow-md rounded-md">
+    <div className="flex items-center justify-between p-6 shadow-md rounded-md">
       <div className="flex items-center space-x-4">
         <label htmlFor="city" className="text-gray-500">City</label>
         <input
