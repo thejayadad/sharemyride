@@ -8,115 +8,122 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; 
 
 const CarForm = () => {
-  const [title, setTitle] = useState('');
-  const [desc, setDesc] = useState('');
-  const [address, setAddress] = useState('');
-  const [photos, setPhotos] = useState([]);
-  const [extraInfo, setExtraInfo] = useState('');
-  const [availableStart, setAvailableStart] = useState('');
-  const [availableFinish, setAvailableFinish] = useState('');
-  const [carSeats, setCarSeats] = useState('');
-  const [price, setPrice] = useState('');
-  const [type, setType] = useState('sedan');
-  const [startDate, setStartDate] = useState(null); 
-  const [endDate, setEndDate] = useState(null); 
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  if (status === 'loading') {
-    return <p>Loading...</p>;
-  }
-
-  if (status === 'unauthenticated') {
-    return <p>Access Denied</p>;
-  }
-
+    const [title, setTitle] = useState('');
+    const [desc, setDesc] = useState('');
+    const [address, setAddress] = useState('');
+    const [photos, setPhotos] = useState([]);
+    const [extraInfo, setExtraInfo] = useState('');
+    const [availableStart, setAvailableStart] = useState('');
+    const [availableFinish, setAvailableFinish] = useState('');
+    const [carSeats, setCarSeats] = useState('');
+    const [price, setPrice] = useState('');
+    const [type, setType] = useState('sedan');
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const { data: session, status } = useSession();
+    const router = useRouter();
   
-  const handlePhotoChange = (e) => {
-    const files = Array.from(e.target.files);
-  
-    if (files.length > 5) {
-      toast.error('You can only upload up to 5 photos.');
-      return;
+    if (status === 'loading') {
+      return <p>Loading...</p>;
     }
   
-    // Optional: You can preview the images
-    setPhotos(files);
+    if (status === 'unauthenticated') {
+      return <p className='text-center'>Access Denied</p>;
+    }
   
-    // Ensure the container is available
-    const previewContainer = document.getElementById('previewContainer');
+    const handlePhotoChange = (e) => {
+        const files = Array.from(e.target.files);
+      
+        if (files.length > 5) {
+          toast.error('You can only upload up to 5 photos.');
+          return;
+        }
+      
+        // Optional: You can preview the images
+        setPhotos((prevPhotos) => [...prevPhotos, ...files]);
+      
+        // Ensure the container is available
+        const previewContainer = document.getElementById('previewContainer');
+      
+        if (previewContainer) {
+          previewContainer.innerHTML = '';
+      
+          files.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const img = document.createElement('img');
+              img.src = reader.result;
+              img.alt = `Preview ${index}`;
+              img.className = 'w-20 h-20 object-cover';
+      
+              previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+      };
+      
   
-    if (previewContainer) {
-      // Clear the previous previews
-      previewContainer.innerHTML = '';
+    const handleDeletePhoto = (index) => {
+      const newPhotos = [...photos];
+      newPhotos.splice(index, 1);
+      setPhotos(newPhotos);
   
-      // Append the new previews
-      files.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          // Creating an image element
+      // Update the preview container
+      const previewContainer = document.getElementById('previewContainer');
+      if (previewContainer) {
+        previewContainer.innerHTML = '';
+        newPhotos.forEach((photo, index) => {
           const img = document.createElement('img');
-          img.src = reader.result;
+          img.src = URL.createObjectURL(photo);
           img.alt = `Preview ${index}`;
-          img.className = 'w-20 h-20 object-cover mt-4';
-  
-          // Append the image to the preview container
+          img.className = 'w-20 h-20 object-cover';
           previewContainer.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-  };
-  
-  
-
-  const handleDeletePhoto = (index) => {
-    const newPhotos = [...photos];
-    newPhotos.splice(index, 1);
-    setPhotos(newPhotos);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!title || !desc || !address || photos.length === 0 || !extraInfo || !availableStart || !availableFinish || !carSeats || !price || !type) {
-      toast.error('All fields are required');
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('desc', desc);
-      formData.append('address', address);
-      photos.forEach((photo, index) => formData.append(`photo${index + 1}`, photo));
-      formData.append('extraInfo', extraInfo);
-      formData.append('availableStart', availableStart);
-      formData.append('availableFinish', availableFinish);
-      formData.append('carSeats', carSeats);
-      formData.append('price', price);
-      formData.append('type', type);
-      formData.append('creator', session.user.id);
-
-      const res = await fetch(`http://localhost:3000/api/car`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${session?.user?.accessToken}`,
-        },
-      });
-
-      if (!res.ok) {
-        throw new Error('Error occurred');
+        });
       }
-
-      const car = await res.json();
-
-      router.push(`/`);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    };
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+  
+      if (!title || !desc || !address || photos.length === 0 || !extraInfo || !availableStart || !availableFinish || !carSeats || !price || !type) {
+        toast.error('All fields are required');
+        return;
+      }
+  
+      try {
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('desc', desc);
+        formData.append('address', address);
+        photos.forEach((photo, index) => formData.append(`photo${index + 1}`, photo));
+        formData.append('extraInfo', extraInfo);
+        formData.append('availableStart', availableStart);
+        formData.append('availableFinish', availableFinish);
+        formData.append('carSeats', carSeats);
+        formData.append('price', price);
+        formData.append('type', type);
+        formData.append('creator', session.user.id);
+  
+        const res = await fetch(`http://localhost:3000/api/car`, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${session?.user?.accessToken}`,
+          },
+        });
+  
+        if (!res.ok) {
+          throw new Error('Error occurred');
+        }
+  
+        const car = await res.json();
+  
+        router.push(`/`);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
   return (
     <div className='max-w-screen-xl mx-auto'>
@@ -137,12 +144,12 @@ const CarForm = () => {
           {photos.map((photo, index) => (
             <div key={index} className='relative'>
               <button
-                className='absolute top-1 right-1 bg-red-500 p-1 rounded-full text-white cursor-pointer'
+                className='absolute top-2 right-2 bg-red-500 p-1 rounded-full text-white cursor-pointer'
                 onClick={() => handleDeletePhoto(index)}
               >
                 X
               </button>
-              <img key={index} src={URL.createObjectURL(photo)} alt={`Preview ${index}`} className='w-20 h-20 object-cover mt-4' />
+              <img key={index} src={URL.createObjectURL(photo)} alt={`Preview ${index}`} className='w-20 h-20 object-cover' />
             </div>
           ))}
         </div>
@@ -204,7 +211,10 @@ const CarForm = () => {
          className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 
         type='number' placeholder='CarSeats...' onChange={(e) => setCarSeats(e.target.value)} />
-        <input type='number' placeholder='Price...' onChange={(e) => setPrice(e.target.value)} />
+       <input 
+        className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+  
+        type='number' placeholder='Price...' onChange={(e) => setPrice(e.target.value)} />
 
         <button>Create</button>
       </form>
