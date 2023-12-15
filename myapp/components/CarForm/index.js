@@ -49,7 +49,7 @@ const CarForm = () => {
                     'Authorization': `Bearer ${session?.user?.accessToken}`
                 },
                 method: 'POST',
-                body: JSON.stringify({ title, desc, address, photos, extraInfo, pickUp, dropOff, carSeats, price, creator: session?.user?._id })
+                body: JSON.stringify({ title, desc, address, photos, extraInfo, pickUp, dropOff, carSeats, price,  creator: session.user.id, })
             })
 
             if (!res.ok) {
