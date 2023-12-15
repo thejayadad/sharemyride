@@ -8,12 +8,18 @@ const CarSchema = new mongoose.Schema({
     title: String,
     address: String,
     photos: [String],
+ 
     desc: String,
     extraInfo: String,
     pickUp: Number,
     dropOff: Number,
     carSeats: Number,
     price: Number,
+    type: {
+        type: String,
+        enum: ["sedan", "suv", "luxury", "sports", "truck", "van"],
+        default: "sedan",
+      },
 }, {timestamps: true})
 
 export default mongoose?.models?.Car || mongoose.model("Car", CarSchema)

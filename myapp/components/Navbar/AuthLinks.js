@@ -52,7 +52,7 @@ const AuthLinks = () => {
           <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => signOut()} 
           className='focus:outline-none'
           >
-            <FiUser className='text-3xl border text-gray-400' />
+            <FiUser className='text-3xl text-gray-400' />
           </motion.button>
           </div>
       )}
